@@ -6,6 +6,7 @@
 - 支持测试需要登录的接口
 - 登录参数支持动态取值
 - 接口参数和POST请求参数支持动态取值
+- 测试结果自动发送邮件给指定收件人
 
 # 使用方法
 
@@ -15,6 +16,14 @@ python main.py -p PATH [-r RECIPIENT]
 
 - `-p`是必带参数，`PATH`为测试用例所在路径，如`-p case/example`
 - `-r`是选带参数，带此参数测试完成后会将测试结果通过邮件发送给收件人，`RECIPIENT`为收件人，如`-r "recipient1@gmail.com recipient2@gmail.com"`
+
+# 配置参数
+
+- `conf/mail.ini`为发件人邮箱信息
+    - host为SMTP服务器地址
+    - user为登录账号
+    - passwd为登录密码，需进行base64处理
+    - show为发件人邮箱，可与user不同（如同一公司邮箱有多个别名）
 
 # 用例规则
 
