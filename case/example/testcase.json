@@ -1,0 +1,60 @@
+{
+  "description": {
+    "1": "url为必填项，其值格式为字符串，为测试接口的地址",
+    "2": "param为选填项，其值格式为json，为测试接口地址的参数",
+    "2.1": "param支持动态取值，如果需要动态取值，键对应的值格式为json。现支持'get_return'和'get_timestamp'",
+    "2.2": "'type'为'get_return'的，是从登录返回信息里取值，该信息包括登录参数的动态项。除'type'之外，还需要'field'字段。'field'为取值字段，格式与登录动态项一致，名称必须是login_return",
+    "2.3": "'type'为'get_timestamp'的，是获取当前时间戳。除'type'之外，还需要'unit'和'interval'字段。'unit'字段为单位，必须是's'或'ms'，无此字段则默认为's'；'interval'字段为时间差，必须是int型，单位与'unit'一致，无此字段则无时间差",
+    "3": "headers为选填项，其值格式为json，暂不支持动态取值",
+    "4": "type为必填项，其值格式为字符串，暂只支持'GET'和'POST'",
+    "5": "data仅在type为POST时有效，其值格式为json，为POST参数，支持动态取值，规则与param一致",
+    "6": "expect为必填项，其值格式为json，为预期结果。对比时，只需要预期结果包含于返回结果，就认为通过"
+  },
+  "url": "http://www.xxx.com/api/test",
+  "param": {
+    "id": 1,
+    "keyword": "test",
+    "token": {
+      "type": "get_return",
+      "field": "login_return['data']['token']"
+    },
+    "ts": {
+      "type": "get_timestamp",
+      "unit": "s",
+      "interval": -86400
+    },
+    "mts": {
+      "type": "get_timestamp",
+      "unit": "ms",
+      "interval": -86400000
+    }
+  },
+  "headers": {
+    "User-Agent": "Python by ntflc"
+  },
+  "type": "POST",
+  "data": {
+    "id": 1,
+    "keyword": "test",
+    "token": {
+      "type": "get_return",
+      "field": "login_return['data']['token']"
+    },
+    "ts": {
+      "type": "get_timestamp",
+      "unit": "s",
+      "interval": -86400
+    },
+    "mts": {
+      "type": "get_timestamp",
+      "unit": "ms",
+      "interval": -86400000
+    }
+  },
+  "expect": {
+    "status_code": 200,
+    "result": {
+      "text": "Test passed"
+    }
+  }
+}

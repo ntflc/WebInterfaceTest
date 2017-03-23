@@ -1,0 +1,21 @@
+{
+  "description": {
+    "1": "url为必填项，其值格式为字符串，为登录接口的地址",
+    "2": "headers为选填项，其值格式为json，暂不支持动态取值",
+    "3": "data为必填项，其值格式为json，为登录接口参数的键和值",
+    "3.1": "data支持动态取值，如果需要动态取值，键对应的值格式为json。该json包括'type'（暂只支持'get_value'）、'url'和'field'，表示从url的返回值中取field对应的值。field遵循Python从字典中取值的格式，名称必须是resp_dict，[]中为键名，需要加引号"
+  },
+  "url": "http://www.xxx.com/login",
+  "headers": {
+    "User-Agent": "Python by ntflc"
+  },
+  "data": {
+    "email": "test@gmail.com",
+    "password": "password",
+    "token": {
+      "type": "get_value",
+      "url": "http://www.xxx.com/get_token",
+      "field": "resp_dict['result']['token']"
+    }
+  }
+}

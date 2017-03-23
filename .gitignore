@@ -1,0 +1,5 @@
+.idea
+libs/*.pyc
+utils/*.pyc
+/case/*
+!/case/example/
