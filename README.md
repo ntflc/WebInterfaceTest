@@ -31,6 +31,7 @@ python main.py -p PATH [-r RECIPIENT]
 
 - 每次测试所用到的用例需要放在同一路径下，建议在case目录下新建文件夹用于存放用例
 - 如果用例接口依赖于登录，需要在用例目录下添加login.json文件
+- common.json文件用于存储固定的常用字段，供测试用例中的param和data调用。此文件非必须。
 - 测试用例必须以“test”开头、以“.json”结尾，例如`testcase_1.json`
 - 测试时会按照文件名排序，依次测试
 
@@ -70,7 +71,25 @@ login.json格式形如：
         - 上述示例表示从`http://www.xxx.com/get_token`的返回值中，取result下token对应的值
 - 请求登录接口的返回值和data中的动态参数，会合并为一个JSON，用于后续用例中动态取值
 
-# testcase.json
+## common.json
+
+common.json格式形如：
+
+``` json
+{
+  "description": "common.json用于存储固定的常用字段",
+  "key1": "value1",
+  "key2": "value2",
+  "key3": {
+    "key3-1": "value3-1",
+    "key3-2": "value3-2"
+  }
+}
+```
+
+- 该文件只需要符合JSON格式即可，没有特定的字段要求
+
+## testcase.json
 
 testcase.json格式形如：
 
@@ -84,6 +103,10 @@ testcase.json格式形如：
     "token": {
       "type": "get_return",
       "field": "login_return['data']['token']"
+    },
+    "key3-1": {
+      "type": "get_common",
+      "field": "common_data['key3']['key3-1']"
     },
     "ts": {
       "type": "get_timestamp",
@@ -106,6 +129,10 @@ testcase.json格式形如：
     "token": {
       "type": "get_return",
       "field": "login_return['data']['token']"
+    },
+    "key3-1": {
+      "type": "get_common",
+      "field": "common_data['key3']['key3-1']"
     },
     "ts": {
       "type": "get_timestamp",
@@ -133,9 +160,11 @@ testcase.json格式形如：
     - 对于普通参数，如id、page等，键值为字符串或数字
     - 对于动态参数，键值为一个新的JSON
 	    - 新JSON包括必填项type，和选填项（视type而定）
-	    - type为类型，支持get_return和get_timestamp
+	    - type为类型，支持get_return、get_common和get_timestamp
 	    - get_return为从登录返回信息中取值（login.json中已经提到），包括必填参数field。field为取值字段，格式与login.json中的field类似，名称必须是login_return
 	    - 上述示例的token表示从登录返回信息中取data下token对应的值
+	    - get_common为从common.json中取值，包括必填参数field。field取值字段，格式同上，名称必须是common_data
+	    - 上述示例的key3-1表示从common.json中取key3下key3-1对应的值
 	    - get_timestamp为获取当前时间戳，包括选填项unit和interval。unit为单位，必须是s或ms，无此字段则默认为s；interval为时间差，必须是整数（可正可负），单位与unit一致，无此字段则默认为0
 	    - 上述示例的ts、mts表示获取此刻前一天的时间戳，单位分别是秒和毫秒
 - headers为选填项，其值格式为JSON，为请求登录接口时需要附加的headers，暂不支持动态取值

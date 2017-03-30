@@ -13,6 +13,8 @@ class ReadTestCase:
     def __init__(self, case_path, login_return={}):
         self.__case_path = case_path
         self.__login_return = login_return
+        self.__common_json_path = "%s/common.json" % case_path
+        self.__common_data = self.__get_common_json()
 
     @staticmethod
     def __numerical_sort(value):
@@ -21,13 +23,26 @@ class ReadTestCase:
         parts[1::2] = map(int, parts[1::2])
         return parts
 
+    def __get_common_json(self):
+        if not os.path.exists(self.__common_json_path):
+            print "Warning: '%s' doesn't exist, ignore common_data" % self.__common_json_path
+            return {}
+        with open(self.__common_json_path) as json_file:
+            try:
+                common_json = json.load(json_file)
+            except Exception as e:
+                print "Error:", e.message
+                sys.exit(-1)
+        return common_json
+
     def __get_value_by_type(self, data):
         login_return = self.__login_return
+        common_data = self.__common_data
         return_data = {}
         for key in data:
             if isinstance(data[key], dict):
                 try:
-                    if data[key]["type"] == "get_return":
+                    if data[key]["type"] == "get_return" or data[key]["type"] == "get_common":
                         # 获取对应返回值
                         value = eval(data[key]["field"])
                         return_data[key] = value
@@ -69,7 +84,7 @@ class ReadTestCase:
     def __get_case_json(self):
         if not os.path.exists(self.__case_path):
             print "Error: '%s' doesn't exist" % self.__case_path
-            sys.exit(-1)
+            sys.exit(-2)
         # 获取case_path路径下所有test开头的.json文件
         json_list = []
         file_list = os.listdir(self.__case_path)

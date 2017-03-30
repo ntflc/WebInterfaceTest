@@ -18,6 +18,10 @@
       "type": "get_return",
       "field": "login_return['data']['token']"
     },
+    "key3-1": {
+      "type": "get_common",
+      "field": "common_data['key3']['key3-1']"
+    },
     "ts": {
       "type": "get_timestamp",
       "unit": "s",
@@ -39,6 +43,10 @@
     "token": {
       "type": "get_return",
       "field": "login_return['data']['token']"
+    },
+    "key3-1": {
+      "type": "get_common",
+      "field": "common_data['key3']['key3-1']"
     },
     "ts": {
       "type": "get_timestamp",
