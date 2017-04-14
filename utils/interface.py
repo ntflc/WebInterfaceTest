@@ -8,6 +8,8 @@ from libs import send_mail
 
 # 设置接口请求最大时长
 TIMEOUT = 5
+# 设置不同用例间隔
+TIME_INTERVAL = 3
 
 
 class InterfaceTest:
@@ -26,7 +28,22 @@ class InterfaceTest:
         reason = "condition not match"
         for pkey, pvalue in expect.iteritems():
             if isinstance(pvalue, dict):
-                result = self.__check_resp(resp_dict[pkey], pvalue)
+                if not isinstance(resp_dict[pkey], dict):
+                    reason = "key: %s, type of get is not dict" % pkey
+                    result = False
+                else:
+                    result = self.__check_resp(resp_dict[pkey], pvalue)
+            elif isinstance(pvalue, list) and len(pvalue) > 0 and isinstance(pvalue[0], dict):
+                expect_list_len = len(pvalue)
+                resp_list_len = len(resp_dict[pkey])
+                if expect_list_len != resp_list_len:
+                    reason = "key: %s, wrong value length, expect: %d, get: %d" % (pkey, expect_list_len, resp_list_len)
+                    result = False
+                else:
+                    for i in range(expect_list_len):
+                        result = self.__check_resp(resp_dict[pkey][i], pvalue[i])
+                        if isinstance(result, tuple) and not result[0]:
+                            return result
             else:
                 if pkey not in resp_dict:
                     reason = "key: %s is not in resp_dict" % pkey
@@ -36,8 +53,10 @@ class InterfaceTest:
                     result = False
                 else:
                     result = True
-            if not result:
+            if isinstance(result, bool) and not result:
                 return False, reason
+            elif isinstance(result, tuple) and not result[0]:
+                return result
         return result
 
     def __request_interface(self):
@@ -97,6 +116,7 @@ class InterfaceTest:
                 "time": time_cost
             }
             results.append(result_dict)
+            time.sleep(TIME_INTERVAL)
         return results
 
     def get_results(self):
