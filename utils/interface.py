@@ -189,7 +189,7 @@ class SendResultByMail:
         subject = u"NR Spark接口连通性测试结果"
         content = self.__set_content()
         send_mail_obj = send_mail.SendMail("conf/mail.ini", "gmail")
-        status = send_mail_obj.send_mail("html", "AUTO BUILD", mailto_list, subject, content)
+        status = send_mail_obj.send_mail(mailto_list, subject, content)
         if status:
             print "Succeed in sending mails"
         else:
